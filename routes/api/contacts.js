@@ -7,6 +7,7 @@ const {
   addContact,
   removeContact,
   updateContact,
+  updateFavoriteContact,
 } = require("../../models/contacts");
 
 router.get("/", listContacts);
@@ -18,5 +19,7 @@ router.post("/", addContact);
 router.delete("/:contactId", removeContact);
 
 router.put("/:contactId", updateContact);
+
+router.patch("/:contactId/favorite/", updateFavoriteContact);
 
 module.exports = router;
