@@ -10,11 +10,13 @@ const {
   updateFavoriteContact,
 } = require("../../models/contacts");
 
-router.get("/", listContacts);
+const authMiddleware = require("../../middlewares/authMiddleware");
+
+router.get("/", authMiddleware.protect, listContacts);
 
 router.get("/:contactId", getContactById);
 
-router.post("/", addContact);
+router.post("/", authMiddleware.protect, addContact);
 
 router.delete("/:contactId", removeContact);
 
