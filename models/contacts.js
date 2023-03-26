@@ -2,8 +2,18 @@ const { contactSchema, favoriteSchema } = require("../validator/validator");
 const Contacts = require("./contactsModel");
 
 const listContacts = async (req, res, next) => {
+  const { _id } = req.user;
+  const { page = 1, limit = 20, favorite } = req.query;
+  const skip = (page - 1) * limit;
   try {
-    const contacts = await Contacts.find();
+    const contacts = await Contacts.find(
+      favorite ? { owner: _id, favorite } : { owner: _id },
+      "",
+      {
+        skip,
+        limit: Number(limit),
+      }
+    ).populate("owner", "_id email subscription");
 
     res.json({ message: "Your list of contacts", code: 200, contacts });
   } catch (error) {
@@ -23,6 +33,7 @@ const getContactById = async (req, res, next) => {
 };
 
 const addContact = async (req, res, next) => {
+  const { _id } = req.user;
   try {
     const { error } = contactSchema.validate(req.body);
     if (error) {
@@ -30,13 +41,7 @@ const addContact = async (req, res, next) => {
       error.message = "missing required name field";
       throw error;
     }
-    const { name, email, phone, favorite } = req.body;
-    const newContact = await Contacts.create({
-      name,
-      email,
-      phone,
-      favorite,
-    });
+    const newContact = await Contacts.create({ ...req.body, owner: _id });
 
     res.status(201).json({ message: "contact created", code: 201, newContact });
   } catch (error) {
