@@ -52,7 +52,7 @@ const register = async (req, res, next) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const { error } = registerValidator.validate(req.body);
+    const { error } = loginValidator.validate(req.body);
     if (error) {
       error.status = 400;
       error.message = "missing required field";
@@ -99,17 +99,25 @@ const logout = async (req, res) => {
 
 const updateUser = async (req, res) => {
   // if (!req.file) {
-  //   throw HttpError(400, "Avatar must be provided");
+  //   throw new Error(400, "Avatar must be provided");
   // }
   const { path: tempUpload, originalname } = req.file;
-  const resultUpload = path.join(avatarsDir, originalname);
-  console.log(tempUpload);
-  console.log(resultUpload);
-  // const file = req.file;
-  // console.log(file);
-  // const user = req.user;
-  // console.log(user);
-  // res.status(200).json({ user, file });
+  const { _id: id } = req.user;
+  const imageName = `${id}_${originalname}`;
+  try {
+    const resultUpload = path.join(avatarsDir, imageName);
+    await fs.rename(tempUpload, resultUpload);
+
+    const avatarURL = path.join("public", "avatars", imageName);
+
+    await Users.findByIdAndUpdate(req.user._id, { avatarURL });
+
+    res.status(200).json({ avatar: avatarURL, message: "avatar updated" });
+  } catch (error) {
+    await fs.unlink(tempUpload);
+
+    console.log(error.message);
+  }
 };
 
 module.exports = {

@@ -18,7 +18,7 @@ const multerFilter = (req, file, cbk) => {
   if (file.mimetype.startsWith("image")) {
     cbk(null, true);
   } else {
-    cbk(new Error(401, "Not valenok"), false);
+    cbk(new Error(401, "Please upload images only"), false);
   }
 };
 
