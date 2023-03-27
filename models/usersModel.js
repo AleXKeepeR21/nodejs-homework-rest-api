@@ -25,6 +25,10 @@ const usersSchema = new Schema(
       type: String,
       default: null,
     },
+    avatarURL: {
+      type: String,
+      default: "avatars/user.webp",
+    },
   },
   {
     timestamps: true,

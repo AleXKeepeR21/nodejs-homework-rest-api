@@ -1,7 +1,12 @@
 const jwt = require("jsonwebtoken");
+const path = require("path");
+const fs = require("fs/promises");
+
 const Users = require("../models/usersModel");
 
 const { registerValidator, loginValidator } = require("../validator/validator");
+
+const avatarsDir = path.join(__dirname, "../", "public", "avatars");
 
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -92,9 +97,25 @@ const logout = async (req, res) => {
   res.status(401).json({ message: "Not authorized" });
 };
 
+const updateUser = async (req, res) => {
+  // if (!req.file) {
+  //   throw HttpError(400, "Avatar must be provided");
+  // }
+  const { path: tempUpload, originalname } = req.file;
+  const resultUpload = path.join(avatarsDir, originalname);
+  console.log(tempUpload);
+  console.log(resultUpload);
+  // const file = req.file;
+  // console.log(file);
+  // const user = req.user;
+  // console.log(user);
+  // res.status(200).json({ user, file });
+};
+
 module.exports = {
   register,
   login,
   current,
   logout,
+  updateUser,
 };
