@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const path = require("path");
 const fs = require("fs/promises");
+const gravatar = require("gravatar");
 
 const Users = require("../models/usersModel");
 
@@ -32,8 +33,12 @@ const register = async (req, res, next) => {
       });
     }
 
+    // const avatarURL = gravatar.url(email);
+    const avatarURL = gravatar.url(email, { d: "wavatar" });
+
     const newUser = await Users.create({
       ...req.body,
+      avatarURL,
     });
     newUser.password = undefined;
 
@@ -42,6 +47,7 @@ const register = async (req, res, next) => {
     res.status(201).json({
       user: newUser,
       token,
+      avatarURL,
     });
   } catch (error) {
     console.log(error.message);
@@ -104,6 +110,7 @@ const updateUser = async (req, res) => {
   const { path: tempUpload, originalname } = req.file;
   const { _id: id } = req.user;
   const imageName = `${id}_${originalname}`;
+
   try {
     const resultUpload = path.join(avatarsDir, imageName);
     await fs.rename(tempUpload, resultUpload);
