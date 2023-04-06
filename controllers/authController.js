@@ -63,6 +63,7 @@ const register = async (req, res, next) => {
   } catch (error) {
     console.log(error.message);
     return error;
+    // throw error;
   }
 };
 
@@ -145,7 +146,7 @@ const verifyEmail = async (req, res) => {
   try {
     const user = await Users.findOne({ verificationToken });
     if (!user) {
-      res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
     user.verificationToken = null;
     user.verify = true;
@@ -154,13 +155,15 @@ const verifyEmail = async (req, res) => {
       verify: true,
       verificationToken: null,
     });
-    res.status(200).json({ message: "Verification successful" });
+    return res.status(200).json({ message: "Verification successful" });
 
     // await user.save();
 
     // return res.status(200).json({ message: "Verification successful" });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    return res
+      .status(400)
+      .json({ message: "Verification has already been passed" });
   }
 };
 

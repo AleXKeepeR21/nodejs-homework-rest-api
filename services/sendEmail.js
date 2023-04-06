@@ -9,9 +9,10 @@ const sendEmail = async (data) => {
   const email = { ...data, from: "alexkeepersendgrid@gmail.com" };
   try {
     await sgMail.send(email);
-    return true.catch((error) => {
-      console.error(error.message);
-    });
+    return true;
+    //       .catch((error) => {
+    //   console.error(error.message);
+    // });
   } catch (error) {
     throw error;
   }
