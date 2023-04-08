@@ -29,14 +29,6 @@ const usersSchema = new Schema(
       type: String,
       default: "avatars/user.webp",
     },
-    verify: {
-    type: Boolean,
-    default: false,
-  },
-  verificationToken: {
-    type: String,
-    required: [true, 'Verify token is required'],
-  },
   },
   {
     timestamps: true,
