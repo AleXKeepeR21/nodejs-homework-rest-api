@@ -18,4 +18,8 @@ router.patch(
   authController.updateUser
 );
 
+router.get("/verify/:verificationToken", authController.verifyEmail);
+
+router.post("/verify", authController.verifyEmailRepeat);
+
 module.exports = router;
